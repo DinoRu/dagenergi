@@ -33,3 +33,4 @@ Future<void> uploadPhotoToYandexStorage(XFile image, String fileName) async {
     print('Failed to upload image. Error: $e');
   }
 }
+

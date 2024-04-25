@@ -13,11 +13,11 @@ class MyTask {
   String? code;
   String? name;
   String? address;
-  int? currentIndication;
-  int? previousIndication;
+  double? currentIndication;
+  double? previousIndication;
   String? implementer;
-  int? latitude;
-  int? longitude;
+  double? latitude;
+  double? longitude;
   String? comment;
   String? status;
   String? nearPhotoUrl;
@@ -48,11 +48,11 @@ class MyTask {
     String? code,
     String? name,
     String? address,
-    int? currentIndication,
-    int? previousIndication,
+    double? currentIndication,
+    double? previousIndication,
     String? implementer,
-    int? latitude,
-    int? longitude,
+    double? latitude,
+    double? longitude,
     String? comment,
     String? status,
     String? nearPhotoUrl,
@@ -83,11 +83,11 @@ class MyTask {
     code: json["code"],
     name: json["name"],
     address: json["address"],
-    currentIndication: json["current_indication"].toDouble().toInt(),
-    previousIndication: json["previous_indication"] !=null ? json['previous_indication'].toDouble().toInt() : null,
+    currentIndication: json["current_indication"],
+    previousIndication: json["previous_indication"] !=null ? json['previous_indication'] : null,
     implementer: json["implementer"],
-    latitude: json["latitude"].toDouble().toInt(),
-    longitude: json["longitude"].toDouble().toInt(),
+    latitude: json["latitude"],
+    longitude: json["longitude"],
     comment: json["comment"],
     status: json["status"],
     nearPhotoUrl: json["near_photo_url"],

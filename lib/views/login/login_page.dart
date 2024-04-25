@@ -34,6 +34,8 @@ class LogInPage extends StatelessWidget {
               const SizedBox(height: 20),
               const TextField(
                 keyboardType: TextInputType.text,
+                obscureText: true,
+                obscuringCharacter: '*',
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))
@@ -44,26 +46,26 @@ class LogInPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 44),
-              Container(
-                width: double.maxFinite,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 1,
-                      offset: Offset(0, 1),
-                    )
-                  ]
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(context, 'tasks', (route) => false);
-                  },
-                  child: Center(
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(context, 'tasks', (route) => false);
+                },
+                child: Container(
+                  width: double.maxFinite,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(0, 1),
+                      )
+                    ]
+                  ),
+                  child: const Center(
                       child: Text(
                           'Вход',
                           style: TextStyle(

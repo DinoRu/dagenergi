@@ -27,13 +27,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'dagenergy',
+      defaultTransition: Transition.fade,
+      title: 'dagenergi',
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           background: Colors.grey.shade100,
           primary: Colors.blue,
         )
       ),
+
       home: const SplashPage(),
       routes: {
         "tasks": (context) => const TaskPage(),

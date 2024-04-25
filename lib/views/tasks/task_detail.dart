@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dagenergi/controllers/task_controller.dart';
-import 'package:dagenergi/utils/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,13 +8,11 @@ import '../../models/tasks.dart';
 
 class TaskDetailPage extends StatelessWidget {
   final MyTask task;
-  TaskDetailPage({super.key, required this.task});
+  const TaskDetailPage({super.key, required this.task});
 
 
   @override
   Widget build(BuildContext context) {
-    // final Map<String, dynamic> task = Get.arguments['data'];
-    // print(task);
     return GetBuilder<TaskController>(builder: (ctrl) {
       return GestureDetector(
         onTap:() => FocusScope.of(context).unfocus(),
@@ -53,12 +50,15 @@ class TaskDetailPage extends StatelessWidget {
                     children: [
                       taskContainer(num: task.code!, title: 'Код счетчика'),
                       const Divider(),
+                      taskContainer(title: "Наименование", num: task.name!),
+                      const Divider(),
+                      taskContainer(title: "Исполнитель", num: task.implementer!),
+                      const Divider(),
                       taskContainer(
-                          num: task.currentIndication!.toString(), title: 'Предыдущая показания'),
+                          num: task.currentIndication!.toString(),
+                          title: 'Предыдущая показания'
+                      ),
                       const Divider(),
-                      taskContainer(title: "Наименование", num: task.implementer!),
-                      const Divider(),
-                      const SizedBox(height: 20),
                       Container(
                         height: 100,
                         margin: const EdgeInsets.only(top: 10),
@@ -67,16 +67,23 @@ class TaskDetailPage extends StatelessWidget {
                           children: [
                             const Text('Текущий показание'),
                             const SizedBox(height: 10),
-                            TextField(
+                            TextFormField(
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 28
                               ),
-                              controller: ctrl.indicationCtrl,
+                              onChanged: ctrl.updateIndication,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                   hintText: '0'
                               ),
+                              validator: (value) {
+                                if(value == null || value.isEmpty) {
+                                  return 'Введите цифру';
+                                }
+                                return null;
+                              },
+
                             ),
                           ],
                         )
@@ -118,16 +125,14 @@ class TaskDetailPage extends StatelessWidget {
                           ),
                           onPressed:() async {
                             await ctrl.takeImage(task);
-                            // String fileUrl = await ctrl.sendImageToFireStorage(ctrl.file!);
-
                           },
                           child: const Text('Сделать фото счетчика')
                         ),
                       ),
-                      file != null ? SizedBox(
+                      ctrl.hFile != null ? SizedBox(
                           height: 150,
                           width: double.maxFinite,
-                          child: Image.file(File(file!.path), fit: BoxFit.fill,),
+                          child: Image.file(File(ctrl.hFile!.path), fit: BoxFit.fill),
                       ): Container(),
                       Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -136,8 +141,7 @@ class TaskDetailPage extends StatelessWidget {
                         child: ElevatedButton(
                           style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.black)),
                           onPressed: (){
-                            getImageFile();
-                            uploadToS3();
+                            ctrl.takeHomeImage(task);
                             },
                           child: const Text('Сделать дом фото'),
                         ),
@@ -153,27 +157,30 @@ class TaskDetailPage extends StatelessWidget {
                               foregroundColor: MaterialStateProperty.all(Colors
                                   .white)
                           ),
-                          onPressed: () {
-                              TaskController ctrl = Get.find<TaskController>();
-                              MyTask updatedTask = MyTask(
-                                taskId: task.taskId!,
-                                code: task.code!,
-                                address: task.address!,
-                                name: task.name!,
-                                comment: ctrl.commentCtrl.text,
-                                completionDate: task.completionDate,
-                                deletedAt: task.deletedAt,
-                                status: task.status!,
+                          onPressed: () async {
+
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    content: Row(
+                                      children: [
+                                        CircularProgressIndicator(),
+                                        SizedBox(width: 20,),
+                                        Text('Envoi de la tache...')
+                                      ],
+                                    ),
+                                  );
+                                }
                               );
-
-                              ctrl.completeTask(task.taskId!, updatedTask);
-
+                              // ctrl.sendImageToServer(nearFile: ctrl.file!, homeFile: ctrl.hFile!);
+                              await ctrl.uploadImageAndCompleteTask(task.taskId!, task.currentIndication!);
+                              Navigator.pop(context);
                               // clear data
                               ctrl.commentCtrl.clear();
-                              ctrl.indicationCtrl.clear();
                               ctrl.setFile(null);
                               ctrl.setHFile(null);
-
                               Navigator.pop(context);
                           },
                           child: const Text('Отправьте'),
@@ -182,7 +189,9 @@ class TaskDetailPage extends StatelessWidget {
                     ]
                 ),
               ),
-            )),
+            ),
+        ),
+
       );
     });
   }

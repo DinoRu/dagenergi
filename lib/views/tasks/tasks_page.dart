@@ -1,9 +1,9 @@
 import 'package:dagenergi/controllers/task_controller.dart';
-import 'package:dagenergi/views/tasks/task_detail.dart';
-import 'package:dagenergi/views/tasks/task_input.dart';
-import 'package:dagenergi/views/tasks/task_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../custom_widgets/my_bottom_navigation_bar_item.dart';
+import '../home/page_list.dart';
 
 class TaskPage extends StatelessWidget {
   const TaskPage({super.key});
@@ -11,40 +11,41 @@ class TaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TaskController>(builder: (ctrl) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          title: Text('Список задач'),
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications)
+      return RefreshIndicator(
+        onRefresh: () async {
+          ctrl.getAllTask();
+        },
+        child: Scaffold(
+          body: page(ctrl.index),
+          bottomNavigationBar: Container(
+            height: 70,
+            decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                        color: Colors.grey.shade100
+                    )
+                )
             ),
-          ],
-        ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-          child: CustomScrollView(
-            slivers: [
-              const SliverPadding(
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-              ),
-              SliverList.separated(
-                itemBuilder: (context, index) {
-                  final task = ctrl.tasks[index];
-                  return InkWell(
-                      onTap: () {
-                        Get.to(TaskDetailPage(task: task));
-                           // arguments: {'data': ctrl.tasks[index]});
-                      },
-                      child: TaskWidget(task: task))
-                  ;
+            child: BottomNavigationBar(
+                onTap: (int value) {
+                  ctrl.changeIndex(value);
                 },
-                separatorBuilder: (context, index) => const Divider(),
-                itemCount: ctrl.tasks.length,
-              ),
-            ],
+                currentIndex: ctrl.index,
+                elevation: 1,
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.grey,
+                type: BottomNavigationBarType.fixed,
+                items: [
+                  myBottomNavigationBarItem(
+                      'В ы п о л н я е т с я',
+                      const Icon(Icons.donut_large)
+                  ),
+                  myBottomNavigationBarItem(
+                      'В ы п о л н е н о',
+                      const Icon(Icons.check)
+                  )
+                ]
+            ),
           ),
         ),
       );
