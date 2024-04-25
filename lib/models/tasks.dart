@@ -10,9 +10,9 @@ String taskToJson(MyTask data) => json.encode(data.toJson());
 
 class MyTask {
   String? taskId;
-  String? code;
-  String? name;
-  String? address;
+  final String code;
+  final String name;
+  final String address;
   double? currentIndication;
   double? previousIndication;
   String? implementer;
@@ -27,9 +27,9 @@ class MyTask {
 
   MyTask({
     this.taskId,
-    this.code,
-    this.name,
-    this.address,
+    required this.code,
+    required this.name,
+    required this.address,
     this.currentIndication,
     this.previousIndication,
     this.implementer,

@@ -111,10 +111,18 @@ class TaskDetailPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       ctrl.file != null ? SizedBox(
-                        height: 150,
+                        height: 200,
                         width: double.maxFinite,
                         child: Image.file(File(ctrl.file!.path), fit: BoxFit.fill)
-                      ): Container(),
+                      ): const SizedBox(
+                        width: double.maxFinite,
+                        height: 200,
+                        child: Center(
+                          child: Icon(
+                            Icons.camera
+                          ),
+                        ),
+                      ),
                       Container(
                         margin: const EdgeInsets.only(top: 20, bottom: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -126,14 +134,20 @@ class TaskDetailPage extends StatelessWidget {
                           onPressed:() async {
                             await ctrl.takeImage(task);
                           },
-                          child: const Text('Сделать фото счетчика')
+                          child: const Text('Фото показание')
                         ),
                       ),
                       ctrl.hFile != null ? SizedBox(
-                          height: 150,
+                          height: 200,
                           width: double.maxFinite,
                           child: Image.file(File(ctrl.hFile!.path), fit: BoxFit.fill),
-                      ): Container(),
+                      ): const SizedBox(
+                         width: double.maxFinite,
+                        height: 200,
+                        child: Center(
+                          child: Icon(Icons.camera),
+                        ),
+                      ),
                       Container(
                         margin: const EdgeInsets.only(top: 10, bottom: 10),
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -143,7 +157,7 @@ class TaskDetailPage extends StatelessWidget {
                           onPressed: (){
                             ctrl.takeHomeImage(task);
                             },
-                          child: const Text('Сделать дом фото'),
+                          child: const Text('фото счетчик'),
                         ),
                       ),
                       Container(
@@ -168,7 +182,7 @@ class TaskDetailPage extends StatelessWidget {
                                       children: [
                                         CircularProgressIndicator(),
                                         SizedBox(width: 20,),
-                                        Text('Envoi de la tache...')
+                                        Center(child: Text('Отправка...'))
                                       ],
                                     ),
                                   );

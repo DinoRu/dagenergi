@@ -15,6 +15,7 @@ class TaskController extends GetxController {
 
   //? TextEditingController
   TextEditingController commentCtrl = TextEditingController();
+  TextEditingController searchItem = TextEditingController();
   final currentIndication = ''.obs;
 
   void updateIndication(String value) {
@@ -61,10 +62,6 @@ class TaskController extends GetxController {
   //Function to take first image
   Future<void> takeImage(MyTask myTask) async {
     _file = await _picker.pickImage(source: ImageSource.camera);
-    // if(_file != null) {
-    //   File file = File(_file!.path);
-    //   meterImageUrl = await uploadImage(_file!);
-    // }
     update();
   }
 
@@ -92,9 +89,6 @@ class TaskController extends GetxController {
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile = await _picker.pickImage(source: ImageSource.camera);
-    // if(_hFile != null) {
-    //   homeImageUrl = await uploadImage(_hFile!);
-    //   }
     update();
   }
 
@@ -122,13 +116,24 @@ class TaskController extends GetxController {
   }
 
   //Function to get all tasks
-  Future<void> getAllTask() async {
+  Future<void> getAllTask({String? searchItem}) async {
     const apiUrl = "http://45.147.176.236:5000/tasks";
     try {
       final response = await http.get(Uri.parse(apiUrl));
       if(response.statusCode == 200) {
         final List<Map<String, dynamic>> responseData = List<Map<String, dynamic>>.from(json.decode(response.body)['result']['data']);
-        tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
+        //Filter task by search item
+        if(searchItem != null && searchItem.isNotEmpty) {
+          tasks = responseData
+              .map((json) => MyTask.fromJson(json))
+              .where((task) => 
+              task.code.contains(searchItem) ||
+              task.name.contains(searchItem) ||
+              task.address.contains(searchItem)
+          ).toList();
+        } else {
+          tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
+        }
       } else {
         throw Exception('Failed to fetch tasks');
 
