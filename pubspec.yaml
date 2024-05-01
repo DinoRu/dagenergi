@@ -1,31 +1,27 @@
 name: dagenergi
 description: "Dagenergi app for metric"
 
-publish_to: 'none'
+publish_to: "none"
 
-
-
-version: 1.0.0+5
+version: 1.0.0+7
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
-  image_picker:
-  get: any
-  flutter_screenutil:
-  image:
+  cloud_firestore: ^4.16.0
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
   http: any
   firebase_core: any
   firebase_storage: ^11.7.0
-  cloud_firestore: ^4.16.0
+  flutter_image_compress: ^2.2.0
   flutter_native_splash: ^2.4.0
-
-
-
+  flutter_screenutil:
+  get: any
+  image_picker:
+  path_provider: any
 
 dev_dependencies:
   flutter_test:
@@ -39,7 +35,6 @@ flutter_icons:
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 flutter:
-
   uses-material-design: true
 
   assets:

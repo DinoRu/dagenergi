@@ -12,85 +12,128 @@ class DoTaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<TaskController>(builder: (ctrl) {
-      return GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            ctrl.getAllTask();
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              title: const Text('Список задач'),
+    void showBackDialog() {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Text('Выйти из Дагэнержи онлайн?'),
               actions: [
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.notifications)
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Нет")
                 ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Да")
+                )
               ],
-
-            ),
-            drawer: const MyDrawer(),
-            body: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey
-                          )
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(CupertinoIcons.search, color: Colors.grey,),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: TextFormField(
-                              controller: ctrl.searchItem,
+            );
+          }
+      );
+    }
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if(didPop) {
+          return;
+        }
+        showBackDialog();
+      },
+      child: GetBuilder<TaskController>(builder: (ctrl) {
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ctrl.getAllTask();
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                title: const Text('Список задач'),
+                actions: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    margin: const EdgeInsets.only(right: 25),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blue[900],
+                    ),
+                    child: Center(child: Text('${ctrl.tasks.length}')),
+                  ),
+                ],
+              ),
+              drawer: const MyDrawer(),
+              body: Column(
+                children: [
+                  Container(
+                    height: 50,
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300]
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(CupertinoIcons.search, color: Colors.grey,),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: TextField(
                               onChanged: (value) {
                                 ctrl.getAllTask(searchItem: ctrl.searchItem.text);
                               },
-                              decoration: InputDecoration(
+                              decoration:  const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Поиск(Код, наименование, адрес счетчик)',
+                                hintText: "Код, Наименование, Адрес счетчик",
                                 hintStyle: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 16
+                                  fontSize: 18,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w800
+
                                 )
                               ),
-                            ),
-                          ),
-                        ],
-                      )
+
+                            )
+                        )
+                      ],
                     ),
                   ),
-                  SliverList.builder(
-                    itemBuilder: (context, index) {
-                      final task = ctrl.tasks[index];
-                      return InkWell(
-                          onTap: () {
-                            Get.to(TaskDetailPage(task: task));
-                          },
-                          child: TaskWidget(task: task))
-                      ;
-                    },
-                    itemCount: ctrl.tasks.length,
+                  Expanded(
+                    child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Scrollbar(
+                          interactive: true,
+                          child: ListView.builder(
+                              itemCount: ctrl.tasks.length,
+                              itemBuilder: (context, i) {
+                                final task = ctrl.tasks[i];
+                                return InkWell(
+                                    onTap: () {
+                                      Get.to(() => TaskDetailPage(task: task, ctrl: ctrl));
+                                    },
+                                    child: TaskWidget(task: task)
+                                );
+                              }
+                          ),
+                        ),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }
