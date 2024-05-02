@@ -80,7 +80,7 @@ class TaskController extends GetxController {
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     update();
   }
 

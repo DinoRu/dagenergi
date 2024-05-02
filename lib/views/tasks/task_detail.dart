@@ -182,7 +182,7 @@ class TaskDetailPage extends StatelessWidget {
                                   });
                               // ctrl.sendImageToServer(nearFile: ctrl.file!, homeFile: ctrl.hFile!);
                               await ctrl.uploadImageAndCompleteTask(
-                                  task.taskId!, task.currentIndication ?? 0.0, ctrl.commentCtrl.text);
+                                  task.taskId!, task.previousIndication!, ctrl.commentCtrl.text);
                               Navigator.pop(context);
                               // clear data
                               ctrl.commentCtrl.clear();
