@@ -70,33 +70,17 @@ class TaskController extends GetxController {
 
   // compress file and get Uint8List
 
-  //Using flutter_image_compress
-  Future<XFile> _resizedImage(XFile imageFile) async {
-    List<int> imageBytes = (await FlutterImageCompress.compressWithFile(
-      imageFile.path,
-      minHeight: 600,
-      minWidth: 800,
-      quality: 90,
-    )) as List<int>;
-    String fname = imageFile.name;
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-    String compressImagePath = "$appDocPath/$fname.jpg";
-    await File(compressImagePath).writeAsBytes(imageBytes);
-    return XFile(compressImagePath);
-  }
-
   //Function to take first image
   Future<void> takeImage(MyTask myTask) async {
     _file =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 90);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
     update();
   }
 
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 90);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
     update();
   }
 
@@ -153,8 +137,8 @@ class TaskController extends GetxController {
           tasks = responseData
               .map((json) => MyTask.fromJson(json))
               .where((task) =>
-                  (task.code != null &&
-                      task.code!.toLowerCase().contains(lowerSearchItem!)) ||
+                  (task.number != null &&
+                      task.number!.toLowerCase().contains(lowerSearchItem!)) ||
                   (task.name != null &&
                       task.name!.toLowerCase().contains(lowerSearchItem!)) ||
                   (task.address != null &&
@@ -163,7 +147,6 @@ class TaskController extends GetxController {
         } else {
           tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
           totalTasks = tasks.length;
-          print(totalTasks);
         }
       } else {
         throw Exception('Failed to fetch tasks');
@@ -178,13 +161,16 @@ class TaskController extends GetxController {
 
   //Function to update task
   Future<void> completeTask(String taskId, double previousIndication,
-      String meterImageUrl, String homeImageUrl) async {
+      String meterImageUrl, String homeImageUrl, String? comment) async {
     final apiUrl = "http://45.147.176.236:5000/tasks/$taskId/complete";
     final completeTask = TaskComplete(
         nearPhotoUrl: meterImageUrl,
         farPhotoUrl: homeImageUrl,
         previousIndication: previousIndication,
-        currentIndication: double.parse(currentIndication.value));
+        currentIndication: double.parse(currentIndication.value),
+        comment: comment,
+
+    );
     try {
       final response = await http.put(
         Uri.parse(apiUrl),
@@ -209,7 +195,7 @@ class TaskController extends GetxController {
   }
 
   Future<void> uploadImageAndCompleteTask(
-      String taskId, double previousIndication) async {
+      String taskId, double previousIndication, String? comment) async {
     try {
       if (_file != null) {
         meterImageUrl = await uploadImage(_file!);
@@ -218,7 +204,7 @@ class TaskController extends GetxController {
         homeImageUrl = await uploadImage(_hFile!);
       }
       await completeTask(
-          taskId, previousIndication, meterImageUrl, homeImageUrl);
+          taskId, previousIndication, meterImageUrl, homeImageUrl, comment);
       resetImages();
     } catch (e) {
       log(e.toString());

@@ -12,41 +12,44 @@ class MyTask {
   String? taskId;
   String? code;
   String? name;
+  String? number;
   String? address;
   dynamic currentIndication;
-  double previousIndication;
+  double? previousIndication;
   dynamic implementer;
   dynamic latitude;
   dynamic longitude;
   dynamic comment;
-  String status;
-  String? nearPhotoUrl;
-  String? farPhotoUrl;
+  String? status;
+  dynamic nearPhotoUrl;
+  dynamic farPhotoUrl;
   dynamic completionDate;
   dynamic deletedAt;
 
   MyTask({
-    required this.taskId,
-    required this.code,
-    required this.name,
-    required this.address,
-    required this.currentIndication,
-    required this.previousIndication,
-    required this.implementer,
-    required this.latitude,
-    required this.longitude,
-    required this.comment,
-    required this.status,
-    required this.nearPhotoUrl,
-    required this.farPhotoUrl,
-    required this.completionDate,
-    required this.deletedAt,
+    this.taskId,
+    this.code,
+    this.name,
+    this.number,
+    this.address,
+    this.currentIndication,
+    this.previousIndication,
+    this.implementer,
+    this.latitude,
+    this.longitude,
+    this.comment,
+    this.status,
+    this.nearPhotoUrl,
+    this.farPhotoUrl,
+    this.completionDate,
+    this.deletedAt,
   });
 
   factory MyTask.fromJson(Map<String, dynamic> json) => MyTask(
     taskId: json["task_id"],
     code: json["code"],
     name: json["name"],
+    number: json["number"],
     address: json["address"],
     currentIndication: json["current_indication"],
     previousIndication: json["previous_indication"],
@@ -65,6 +68,7 @@ class MyTask {
     "task_id": taskId,
     "code": code,
     "name": name,
+    "number": number,
     "address": address,
     "current_indication": currentIndication,
     "previous_indication": previousIndication,

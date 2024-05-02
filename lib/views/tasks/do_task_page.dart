@@ -37,103 +37,96 @@ class DoTaskPage extends StatelessWidget {
           }
       );
     }
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool didPop) {
-        if(didPop) {
-          return;
-        }
-        showBackDialog();
-      },
-      child: GetBuilder<TaskController>(builder: (ctrl) {
-        return GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: RefreshIndicator(
-            onRefresh: () async {
-              ctrl.getAllTask();
-            },
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                title: const Text('Список задач'),
-                actions: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    margin: const EdgeInsets.only(right: 25),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blue[900],
-                    ),
-                    child: Center(child: Text('${ctrl.tasks.length}')),
+    return GetBuilder<TaskController>(builder: (ctrl) {
+      return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            ctrl.getAllTask();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              title: const Text('Список задач'),
+              actions: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  margin: const EdgeInsets.only(right: 25),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue[900],
                   ),
-                ],
-              ),
-              drawer: const MyDrawer(),
-              body: Column(
-                children: [
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300]
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(CupertinoIcons.search, color: Colors.grey,),
-                        const SizedBox(width: 10),
-                        Expanded(
-                            child: TextField(
-                              onChanged: (value) {
-                                ctrl.getAllTask(searchItem: ctrl.searchItem.text);
-                              },
-                              decoration:  const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Код, Наименование, Адрес счетчик",
-                                hintStyle: TextStyle(
-                                  fontSize: 18,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w800
-
-                                )
-                              ),
-
-                            )
-                        )
-                      ],
-                    ),
+                  child: Center(child: Text('${ctrl.tasks.length}')),
+                ),
+              ],
+            ),
+            drawer: const MyDrawer(),
+            body: Column(
+              children: [
+                Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300]
                   ),
-                  Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Scrollbar(
-                          interactive: true,
-                          child: ListView.builder(
-                              itemCount: ctrl.tasks.length,
-                              itemBuilder: (context, i) {
-                                final task = ctrl.tasks[i];
-                                return InkWell(
-                                    onTap: () {
-                                      Get.to(() => TaskDetailPage(task: task, ctrl: ctrl));
-                                    },
-                                    child: TaskWidget(task: task)
-                                );
-                              }
-                          ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(CupertinoIcons.search, color: Colors.grey,),
+                      const SizedBox(width: 10),
+                      Expanded(
+                          child: TextField(
+                            controller: ctrl.searchItem,
+                            onChanged: (value) {
+                              ctrl.getAllTask(searchItem: ctrl.searchItem.text);
+                            },
+                            decoration:  const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Код, Наименование, Адрес счетчик",
+                              hintStyle: TextStyle(
+                                fontSize: 18,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w800
+
+                              )
+                            ),
+
+                          )
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Scrollbar(
+                        interactive: true,
+                        child: ListView.builder(
+                            itemExtent: 200,
+                            itemCount: ctrl.tasks.length,
+                            itemBuilder: (context, i) {
+                              final task = ctrl.tasks[i];
+                              return InkWell(
+                                  onTap: () {
+                                    Get.to(() => TaskDetailPage(task: task, ctrl: ctrl));
+                                  },
+                                  child: TaskWidget(task: task)
+                              );
+                            }
                         ),
-                    ),
+                      ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 }

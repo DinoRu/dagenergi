@@ -21,7 +21,7 @@ class TaskDetailPage extends StatelessWidget {
               appBar: AppBar(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
-                title: Text(task.name!),
+                title: Text(task.name ?? 'N/A'),
               ),
               body: SingleChildScrollView(
                 child: Container(
@@ -41,11 +41,11 @@ class TaskDetailPage extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        taskContainer(num: task.code!, title: 'Код счетчика'),
+                        taskContainer(num: task.number!, title: 'Код счетчика'),
                         Divider(
                           color: Colors.grey[300],
                         ),
-                        taskContainer(title: "Наименование", num: task.name!),
+                        taskContainer(title: "Наименование", num: task.name ?? 'N/A'),
                         Divider(
                           color: Colors.grey[300],
                         ),
@@ -182,8 +182,7 @@ class TaskDetailPage extends StatelessWidget {
                                   });
                               // ctrl.sendImageToServer(nearFile: ctrl.file!, homeFile: ctrl.hFile!);
                               await ctrl.uploadImageAndCompleteTask(
-                                  task.taskId!, task.currentIndication ?? 0.0);
-
+                                  task.taskId!, task.currentIndication ?? 0.0, ctrl.commentCtrl.text);
                               Navigator.pop(context);
                               // clear data
                               ctrl.commentCtrl.clear();

@@ -25,16 +25,16 @@ class TaskWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            task.code!,
+            task.number!,
             style: const TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.w500
             ),
           ),
           const SizedBox(height: 10),
           Flexible(
             child: Text(
-              task.name!,
+              task.name ?? 'N/A',
               style: const TextStyle(
                 fontSize: 16
               ),

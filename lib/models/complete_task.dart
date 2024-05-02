@@ -13,12 +13,14 @@ class TaskComplete {
   String farPhotoUrl;
   double previousIndication;
   double currentIndication;
+  String? comment;
 
   TaskComplete({
     required this.nearPhotoUrl,
     required this.farPhotoUrl,
     required this.previousIndication,
     required this.currentIndication,
+    this.comment,
   });
 
   factory TaskComplete.fromJson(Map<String, dynamic> json) => TaskComplete(
@@ -26,6 +28,7 @@ class TaskComplete {
     farPhotoUrl: json["far_photo_url"],
     previousIndication: json["previous_indication"],
     currentIndication: json["current_indication"],
+    comment: json['comment'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -33,5 +36,6 @@ class TaskComplete {
     "far_photo_url": farPhotoUrl,
     "previous_indication": previousIndication,
     "current_indication": currentIndication,
+    "comment":  comment,
   };
 }
