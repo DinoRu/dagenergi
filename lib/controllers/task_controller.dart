@@ -6,11 +6,11 @@ import 'package:dagenergi/models/complete_task.dart';
 import 'package:dagenergi/models/tasks.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class TaskController extends GetxController {
   static TaskController get to => Get.find();
@@ -18,7 +18,9 @@ class TaskController extends GetxController {
   //? TextEditingController
   TextEditingController commentCtrl = TextEditingController();
   TextEditingController searchItem = TextEditingController();
+  TextEditingController searchCompletedTask = TextEditingController();
   final currentIndication = ''.obs;
+  RxBool loading = false.obs;
 
   int totalTasks = 0;
 
@@ -44,6 +46,9 @@ class TaskController extends GetxController {
   String homeImageUrl = '';
 
   List<MyTask> tasks = [];
+  List<MyTask> searchResults = [];
+  List<MyTask> cachedTasks = [];
+
   final Map<String, XFile?> tempTaskImage = {};
 
   void resetTaskImage(String taskId) {
@@ -80,7 +85,7 @@ class TaskController extends GetxController {
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
     update();
   }
 
@@ -115,14 +120,11 @@ class TaskController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   //Function to get all tasks
-  Future<void> getAllTask({String? searchItem}) async {
+  Future<void> getAllTask() async {
     const apiUrl = "http://45.147.176.236:5000/tasks/";
+    loading.value = true;
     try {
       final response = await http.get(Uri.parse(apiUrl));
       if (response.statusCode == 200) {
@@ -131,33 +133,43 @@ class TaskController extends GetxController {
         final List<Map<String, dynamic>> responseData =
             List<Map<String, dynamic>>.from(
                 json.decode(decodeBody)['result']['data']);
-        //Filter task by search item
-        final String? lowerSearchItem = searchItem?.toLowerCase();
-        if (searchItem != null && searchItem.isNotEmpty) {
-          tasks = responseData
-              .map((json) => MyTask.fromJson(json))
-              .where((task) =>
-                  (task.number != null &&
-                      task.number!.toLowerCase().contains(lowerSearchItem!)) ||
-                  (task.name != null &&
-                      task.name!.toLowerCase().contains(lowerSearchItem!)) ||
-                  (task.address != null &&
-                      task.address!.toLowerCase().contains(lowerSearchItem!)))
-              .toList();
-        } else {
-          tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
-          totalTasks = tasks.length;
-        }
+        tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
+        totalTasks = tasks.length;
+        searchResults = List<MyTask>.from(tasks);
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('cachedTask', jsonEncode(tasks));
+        print(prefs.getString('cachedTask'));
       } else {
         throw Exception('Failed to fetch tasks');
       }
     } catch (e) {
-      debugPrint(e.toString());
+      rethrow;
+    } finally {
+      update();
+      loading.value = false;
+    }
+  }
+
+  //Search algorithm
+  void searchTasks(String query) {
+    try {
+      final String lowerQuery = query.toLowerCase();
+      if(query.isEmpty) {
+        searchResults.assignAll(tasks);
+      } else {
+        searchResults = tasks.where((task) =>
+            (task.name != null && task.name!.toLowerCase().contains(lowerQuery)) ||
+            (task.address != null && task.address!.toLowerCase().contains(lowerQuery)) ||
+            (task.number != null && task.number!.toLowerCase().contains(lowerQuery))
+        ).toList();
+      }
+    } catch(e) {
       rethrow;
     } finally {
       update();
     }
   }
+
 
   //Function to update task
   Future<void> completeTask(String taskId, double previousIndication,
@@ -185,7 +197,6 @@ class TaskController extends GetxController {
         Get.snackbar('Success', "Task was updated successufully!",
             colorText: Colors.green);
       } else {
-        print(response.statusCode);
         Get.snackbar('Error', "Failed to update task", colorText: Colors.red);
       }
     } catch (e) {
@@ -210,4 +221,6 @@ class TaskController extends GetxController {
       log(e.toString());
     }
   }
+
+
 }

@@ -22,14 +22,14 @@ class MyDrawer extends StatelessWidget {
             child: Divider(color: Colors.grey.shade400),
           ),
           MyDrawerTitle(
-              text: "Г л а в н ы й",
+              text: "Г л а в н а я",
               icon: Icons.home,
               onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context, 'tasks', (route) => false);
               }),
-          MyDrawerTitle(
-              text: 'И с т о р и я', icon: Icons.history, onTap: () {}),
+          // MyDrawerTitle(
+          //     text: 'И с т о р и я', icon: Icons.history, onTap: () {}),
           MyDrawerTitle(
               text: 'Н а с т р о й к и', icon: Icons.settings, onTap: () {}),
           const Spacer(),

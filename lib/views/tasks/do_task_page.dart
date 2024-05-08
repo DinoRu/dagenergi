@@ -12,31 +12,6 @@ class DoTaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void showBackDialog() {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: const Text('Выйти из Дагэнержи онлайн?'),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Нет")
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Да")
-                )
-              ],
-            );
-          }
-      );
-    }
     return GetBuilder<TaskController>(builder: (ctrl) {
       return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -82,16 +57,16 @@ class DoTaskPage extends StatelessWidget {
                           child: TextField(
                             controller: ctrl.searchItem,
                             onChanged: (value) {
-                              ctrl.getAllTask(searchItem: ctrl.searchItem.text);
+                              ctrl.searchTasks(ctrl.searchItem.text);
                             },
                             decoration:  const InputDecoration(
                               border: InputBorder.none,
                               hintText: "Код, Наименование, Адрес счетчик",
                               hintStyle: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontStyle: FontStyle.italic,
                                 color: Colors.grey,
-                                fontWeight: FontWeight.w800
+                                fontWeight: FontWeight.w400
 
                               )
                             ),
@@ -104,13 +79,16 @@ class DoTaskPage extends StatelessWidget {
                 Expanded(
                   child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Scrollbar(
+                      child: ctrl.loading.value ? const Center(
+                        child: CircularProgressIndicator(
+                        ),
+                      ) : Scrollbar(
                         interactive: true,
                         child: ListView.builder(
                             itemExtent: 200,
-                            itemCount: ctrl.tasks.length,
+                            itemCount: ctrl.searchItem.text.isEmpty ? ctrl.tasks.length : ctrl.searchResults.length,
                             itemBuilder: (context, i) {
-                              final task = ctrl.tasks[i];
+                              final task = ctrl.searchItem.text.isEmpty ? ctrl.tasks[i] : ctrl.searchResults[i];
                               return InkWell(
                                   onTap: () {
                                     Get.to(() => TaskDetailPage(task: task, ctrl: ctrl));

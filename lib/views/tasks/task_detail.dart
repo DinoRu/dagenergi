@@ -57,7 +57,7 @@ class TaskDetailPage extends StatelessWidget {
                         ),
                         taskContainer(
                             num: task.previousIndication.toString(),
-                            title: 'Предыдущая показания'),
+                            title: 'Предыдущие показания'),
                         Divider(
                           color: Colors.grey[300],
                         ),
@@ -67,7 +67,7 @@ class TaskDetailPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Текущий показание'),
+                                const Text('Текущие показания'),
                                 const SizedBox(height: 10),
                                 TextFormField(
                                   style: const TextStyle(
@@ -79,7 +79,7 @@ class TaskDetailPage extends StatelessWidget {
                                       const InputDecoration(hintText: '0'),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Введите цифру';
+                                      return 'Введите текущие показания';
                                     }
                                     return null;
                                   },
@@ -95,7 +95,7 @@ class TaskDetailPage extends StatelessWidget {
                             maxLength: 500,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
-                                hintText: 'Пищите Комментарии',
+                                hintText: 'Комментарий',
                                 enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide:
@@ -128,7 +128,7 @@ class TaskDetailPage extends StatelessWidget {
                               onPressed: () async {
                                 await ctrl.takeImage(task);
                               },
-                              child: const Text('Фото показание')),
+                              child: const Text('Фото показаний')),
                         ),
                         ctrl.hFile != null
                             ? SizedBox(
@@ -149,7 +149,7 @@ class TaskDetailPage extends StatelessWidget {
                             onPressed: () {
                               ctrl.takeHomeImage(task);
                             },
-                            child: const Text('фото счетчик'),
+                            child: const Text('Фото счётчика'),
                           ),
                         ),
                         Container(
@@ -175,7 +175,7 @@ class TaskDetailPage extends StatelessWidget {
                                           SizedBox(
                                             width: 20,
                                           ),
-                                          Center(child: Text('Отправка...'))
+                                          Center(child: Text('Загрузка...'))
                                         ],
                                       ),
                                     );
@@ -190,7 +190,7 @@ class TaskDetailPage extends StatelessWidget {
                               ctrl.setHFile(null);
                               Navigator.pop(context);
                             },
-                            child: const Text('Отправьте'),
+                            child: const Text('Выполнить'),
                           ),
                         ),
                       ]),

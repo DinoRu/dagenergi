@@ -3,7 +3,7 @@ description: "Dagenergi app for metric"
 
 publish_to: "none"
 
-version: 1.0.0+8
+version: 1.0.0+9
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -16,12 +16,13 @@ dependencies:
   http: any
   firebase_core: any
   firebase_storage: ^11.7.0
-  flutter_image_compress: ^2.2.0
   flutter_native_splash: ^2.4.0
   flutter_screenutil:
   get: any
   image_picker:
   path_provider: any
+  cached_network_image: ^3.3.1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
