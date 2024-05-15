@@ -20,12 +20,7 @@ class TaskPage extends StatelessWidget {
           bottomNavigationBar: Container(
             height: 70,
             decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: Colors.grey.shade100
-                    )
-                )
-            ),
+                border: Border(top: BorderSide(color: Colors.grey.shade100))),
             child: BottomNavigationBar(
                 onTap: (int value) {
                   ctrl.changeIndex(value);
@@ -37,15 +32,10 @@ class TaskPage extends StatelessWidget {
                 type: BottomNavigationBarType.fixed,
                 items: [
                   myBottomNavigationBarItem(
-                      'В ы п о л н я е т с я',
-                      const Icon(Icons.donut_large)
-                  ),
+                      'В ы п о л н я е т с я', const Icon(Icons.donut_large)),
                   myBottomNavigationBarItem(
-                      'В ы п о л н е н о',
-                      const Icon(Icons.check)
-                  )
-                ]
-            ),
+                      'В ы п о л н е н о', const Icon(Icons.check))
+                ]),
           ),
         ),
       );

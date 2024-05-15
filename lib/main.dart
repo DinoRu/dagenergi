@@ -1,4 +1,5 @@
 import 'package:dagenergi/controllers/complete_task_controller.dart';
+import 'package:dagenergi/controllers/login_controller.dart';
 import 'package:dagenergi/controllers/splash_controller.dart';
 import 'package:dagenergi/controllers/task_controller.dart';
 import 'package:dagenergi/views/splash/splash_page.dart';
@@ -15,6 +16,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
+  Get.put(LoginController());
   Get.put(TaskController());
   Get.put(CompleteTaskController());
   Get.put(SplashController());

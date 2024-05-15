@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class TaskController extends GetxController {
   static TaskController get to => Get.find();
@@ -23,6 +23,18 @@ class TaskController extends GetxController {
   RxBool loading = false.obs;
 
   int totalTasks = 0;
+
+  // //Camera controller
+  // CameraController? cameraController;
+  // bool get isCameraInitialized =>
+  //     cameraController != null && cameraController!.value.isInitialized;
+
+  // Future<void> initializeCamera() async {
+  //   final cameras = await availableCameras();
+  //   final firstCamera = cameras.first;
+  //   cameraController = CameraController(firstCamera, ResolutionPreset.medium);
+  //   await cameraController!.initialize();
+  // }
 
   void updateIndication(String value) {
     currentIndication.value = value;
@@ -73,7 +85,41 @@ class TaskController extends GetxController {
     update();
   }
 
-  // compress file and get Uint8List
+  Future<void> showLocationPermissionDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Permission request'),
+            content: const Text(
+                "'This app needs location permission to take photos. Please grant the permission in settings."),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Cancel")),
+              TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await openAppSettings();
+                  },
+                  child: const Text('Open settings')),
+            ],
+          );
+        });
+  }
+
+  Future<bool> checkLocationPermission(BuildContext context) async {
+    var status = await Permission.location.status;
+    if (status.isDenied) {
+      status = await Permission.location.request();
+    }
+    if (!status.isGranted) {
+      await showLocationPermissionDialog(context);
+    }
+    return status.isGranted;
+  }
 
   //Function to take first image
   Future<void> takeImage(MyTask myTask) async {
@@ -120,7 +166,6 @@ class TaskController extends GetxController {
     super.onInit();
   }
 
-
   //Function to get all tasks
   Future<void> getAllTask() async {
     const apiUrl = "http://45.147.176.236:5000/tasks/";
@@ -138,7 +183,6 @@ class TaskController extends GetxController {
         searchResults = List<MyTask>.from(tasks);
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('cachedTask', jsonEncode(tasks));
-        print(prefs.getString('cachedTask'));
       } else {
         throw Exception('Failed to fetch tasks');
       }
@@ -154,34 +198,36 @@ class TaskController extends GetxController {
   void searchTasks(String query) {
     try {
       final String lowerQuery = query.toLowerCase();
-      if(query.isEmpty) {
+      if (query.isEmpty) {
         searchResults.assignAll(tasks);
       } else {
-        searchResults = tasks.where((task) =>
-            (task.name != null && task.name!.toLowerCase().contains(lowerQuery)) ||
-            (task.address != null && task.address!.toLowerCase().contains(lowerQuery)) ||
-            (task.number != null && task.number!.toLowerCase().contains(lowerQuery))
-        ).toList();
+        searchResults = tasks
+            .where((task) =>
+                (task.name != null &&
+                    task.name!.toLowerCase().contains(lowerQuery)) ||
+                (task.address != null &&
+                    task.address!.toLowerCase().contains(lowerQuery)) ||
+                (task.number != null &&
+                    task.number!.toLowerCase().contains(lowerQuery)))
+            .toList();
       }
-    } catch(e) {
+    } catch (e) {
       rethrow;
     } finally {
       update();
     }
   }
 
-
   //Function to update task
   Future<void> completeTask(String taskId, double previousIndication,
       String meterImageUrl, String homeImageUrl, String? comment) async {
     final apiUrl = "http://45.147.176.236:5000/tasks/$taskId/complete";
     final completeTask = TaskComplete(
-        nearPhotoUrl: meterImageUrl,
-        farPhotoUrl: homeImageUrl,
-        previousIndication: previousIndication,
-        currentIndication: double.parse(currentIndication.value),
-        comment: comment,
-
+      nearPhotoUrl: meterImageUrl,
+      farPhotoUrl: homeImageUrl,
+      previousIndication: previousIndication,
+      currentIndication: double.parse(currentIndication.value),
+      comment: comment,
     );
     try {
       final response = await http.put(
@@ -221,6 +267,4 @@ class TaskController extends GetxController {
       log(e.toString());
     }
   }
-
-
 }

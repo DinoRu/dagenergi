@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dagenergi/controllers/task_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../models/tasks.dart';
 
 class TaskDetailPage extends StatelessWidget {
@@ -45,7 +44,8 @@ class TaskDetailPage extends StatelessWidget {
                         Divider(
                           color: Colors.grey[300],
                         ),
-                        taskContainer(title: "Наименование", num: task.name ?? 'N/A'),
+                        taskContainer(
+                            title: "Наименование", num: task.name ?? 'N/A'),
                         Divider(
                           color: Colors.grey[300],
                         ),
@@ -126,7 +126,10 @@ class TaskDetailPage extends StatelessWidget {
                                     MaterialStateProperty.all(Colors.black),
                               ),
                               onPressed: () async {
-                                await ctrl.takeImage(task);
+                                if (await ctrl
+                                    .checkLocationPermission(context)) {
+                                  await ctrl.takeImage(task);
+                                }
                               },
                               child: const Text('Фото показаний')),
                         ),
@@ -146,8 +149,10 @@ class TaskDetailPage extends StatelessWidget {
                             style: ButtonStyle(
                                 foregroundColor:
                                     MaterialStateProperty.all(Colors.black)),
-                            onPressed: () {
-                              ctrl.takeHomeImage(task);
+                            onPressed: () async {
+                              if (await ctrl.checkLocationPermission(context)) {
+                                ctrl.takeHomeImage(task);
+                              }
                             },
                             child: const Text('Фото счётчика'),
                           ),
@@ -182,7 +187,9 @@ class TaskDetailPage extends StatelessWidget {
                                   });
                               // ctrl.sendImageToServer(nearFile: ctrl.file!, homeFile: ctrl.hFile!);
                               await ctrl.uploadImageAndCompleteTask(
-                                  task.taskId!, task.previousIndication!, ctrl.commentCtrl.text);
+                                  task.taskId!,
+                                  task.previousIndication!,
+                                  ctrl.commentCtrl.text);
                               Navigator.pop(context);
                               // clear data
                               ctrl.commentCtrl.clear();
