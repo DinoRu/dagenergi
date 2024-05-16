@@ -1,4 +1,5 @@
 import 'package:dagenergi/controllers/task_controller.dart';
+import 'package:dagenergi/utils/shimer_page.dart';
 import 'package:dagenergi/views/tasks/task_detail.dart';
 import 'package:dagenergi/views/tasks/task_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,59 +46,58 @@ class DoTaskPage extends StatelessWidget {
                   margin: const EdgeInsets.all(10),
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300]
-                  ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300]),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(CupertinoIcons.search, color: Colors.grey,),
+                      const Icon(
+                        CupertinoIcons.search,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                           child: TextField(
-                            controller: ctrl.searchItem,
-                            onChanged: (value) {
-                              ctrl.searchTasks(ctrl.searchItem.text);
-                            },
-                            decoration:  const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Код, Наименование, Адрес счетчик",
-                              hintStyle: TextStyle(
+                        controller: ctrl.searchItem,
+                        onChanged: (value) {
+                          ctrl.searchTasks(ctrl.searchItem.text);
+                        },
+                        decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Код, Наименование, Адрес счетчик",
+                            hintStyle: TextStyle(
                                 fontSize: 16,
                                 fontStyle: FontStyle.italic,
                                 color: Colors.grey,
-                                fontWeight: FontWeight.w400
-
-                              )
-                            ),
-
-                          )
-                      )
+                                fontWeight: FontWeight.w400)),
+                      ))
                     ],
                   ),
                 ),
                 Expanded(
                   child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: ctrl.loading.value ? const Center(
-                        child: CircularProgressIndicator(
-                        ),
-                      ) : Scrollbar(
-                        interactive: true,
-                        child: ListView.builder(
-                            itemExtent: 200,
-                            itemCount: ctrl.searchItem.text.isEmpty ? ctrl.tasks.length : ctrl.searchResults.length,
-                            itemBuilder: (context, i) {
-                              final task = ctrl.searchItem.text.isEmpty ? ctrl.tasks[i] : ctrl.searchResults[i];
-                              return InkWell(
-                                  onTap: () {
-                                    Get.to(() => TaskDetailPage(task: task, ctrl: ctrl));
-                                  },
-                                  child: TaskWidget(task: task)
-                              );
-                            }
-                        ),
-                      ),
+                    padding: const EdgeInsets.all(10),
+                    child: ctrl.loading.value
+                        ? const TaskShimmerPage()
+                        : Scrollbar(
+                            interactive: true,
+                            child: ListView.builder(
+                                itemExtent: 200,
+                                itemCount: ctrl.searchItem.text.isEmpty
+                                    ? ctrl.tasks.length
+                                    : ctrl.searchResults.length,
+                                itemBuilder: (context, i) {
+                                  final task = ctrl.searchItem.text.isEmpty
+                                      ? ctrl.tasks[i]
+                                      : ctrl.searchResults[i];
+                                  return InkWell(
+                                      onTap: () {
+                                        Get.to(() => TaskDetailPage(
+                                            task: task, ctrl: ctrl));
+                                      },
+                                      child: TaskWidget(task: task));
+                                }),
+                          ),
                   ),
                 ),
               ],

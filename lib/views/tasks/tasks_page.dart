@@ -11,32 +11,27 @@ class TaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TaskController>(builder: (ctrl) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          ctrl.getAllTask();
-        },
-        child: Scaffold(
-          body: page(ctrl.index),
-          bottomNavigationBar: Container(
-            height: 70,
-            decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey.shade100))),
-            child: BottomNavigationBar(
-                onTap: (int value) {
-                  ctrl.changeIndex(value);
-                },
-                currentIndex: ctrl.index,
-                elevation: 1,
-                selectedItemColor: Colors.blue,
-                unselectedItemColor: Colors.grey,
-                type: BottomNavigationBarType.fixed,
-                items: [
-                  myBottomNavigationBarItem(
-                      'В ы п о л н я е т с я', const Icon(Icons.donut_large)),
-                  myBottomNavigationBarItem(
-                      'В ы п о л н е н о', const Icon(Icons.check))
-                ]),
-          ),
+      return Scaffold(
+        body: page(ctrl.index),
+        bottomNavigationBar: Container(
+          height: 70,
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.grey.shade100))),
+          child: BottomNavigationBar(
+              onTap: (int value) {
+                ctrl.changeIndex(value);
+              },
+              currentIndex: ctrl.index,
+              elevation: 1,
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+              type: BottomNavigationBarType.fixed,
+              items: [
+                myBottomNavigationBarItem(
+                    'В ы п о л н я е т с я', const Icon(Icons.donut_large)),
+                myBottomNavigationBarItem(
+                    'В ы п о л н е н о', const Icon(Icons.check))
+              ]),
         ),
       );
     });

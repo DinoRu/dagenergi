@@ -16,7 +16,7 @@ class MyTask {
   String? name;
   String? number;
   String? address;
-  double? currentIndication;
+  dynamic currentIndication;
   double? previousIndication;
   dynamic implementer;
   dynamic latitude;
