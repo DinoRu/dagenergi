@@ -19,6 +19,7 @@ dependencies:
   firebase_storage: ^11.7.0
   flutter_native_splash: ^2.4.0
   flutter_screenutil:
+  get_storage: ^2.1.1
   get: any
   image_picker:
   permission_handler: ^11.3.1

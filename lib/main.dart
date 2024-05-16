@@ -7,15 +7,14 @@ import 'package:dagenergi/views/tasks/tasks_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'firebase_options.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform
-  );
+  await GetStorage.init();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Get.put(LoginController());
   Get.put(TaskController());
   Get.put(CompleteTaskController());
@@ -34,12 +33,10 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.fade,
       title: 'dagenergi',
       theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          background: Colors.grey.shade100,
-          primary: Colors.blue,
-        )
-      ),
-
+          colorScheme: ColorScheme.light(
+        background: Colors.grey.shade100,
+        primary: Colors.blue,
+      )),
       home: const SplashPage(),
       routes: {
         "tasks": (context) => const TaskPage(),
