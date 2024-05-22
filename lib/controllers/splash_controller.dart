@@ -1,4 +1,3 @@
-import 'package:dagenergi/controllers/login_controller.dart';
 import 'package:dagenergi/views/login/login_page.dart';
 import 'package:dagenergi/views/tasks/tasks_page.dart';
 import 'package:get/get.dart';

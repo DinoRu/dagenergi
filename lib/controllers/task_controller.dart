@@ -6,6 +6,7 @@ import 'package:dagenergi/models/complete_task.dart';
 import 'package:dagenergi/models/tasks.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -23,18 +24,6 @@ class TaskController extends GetxController {
   RxBool loading = false.obs;
 
   int totalTasks = 0;
-
-  // //Camera controller
-  // CameraController? cameraController;
-  // bool get isCameraInitialized =>
-  //     cameraController != null && cameraController!.value.isInitialized;
-
-  // Future<void> initializeCamera() async {
-  //   final cameras = await availableCameras();
-  //   final firstCamera = cameras.first;
-  //   cameraController = CameraController(firstCamera, ResolutionPreset.medium);
-  //   await cameraController!.initialize();
-  // }
 
   void updateIndication(String value) {
     currentIndication.value = value;
@@ -114,8 +103,7 @@ class TaskController extends GetxController {
     var status = await Permission.location.status;
     if (status.isDenied) {
       status = await Permission.location.request();
-    }
-    if (!status.isGranted) {
+    } else if (!status.isGranted) {
       await showLocationPermissionDialog(context);
     }
     return status.isGranted;
@@ -124,14 +112,14 @@ class TaskController extends GetxController {
   //Function to take first image
   Future<void> takeImage(MyTask myTask) async {
     _file =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     update();
   }
 
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     update();
   }
 

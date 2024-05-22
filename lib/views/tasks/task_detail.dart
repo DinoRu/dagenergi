@@ -190,6 +190,7 @@ class TaskDetailPage extends StatelessWidget {
                                   task.taskId!,
                                   task.previousIndication!,
                                   ctrl.commentCtrl.text);
+
                               Navigator.pop(context);
                               // clear data
                               ctrl.commentCtrl.clear();
