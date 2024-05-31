@@ -28,11 +28,9 @@ class LogInPage extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     prefixIcon: Icon(Icons.person),
                     hintText: 'Имя пользователь',
-
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -43,12 +41,10 @@ class LogInPage extends StatelessWidget {
                   obscuringCharacter: '*',
                   decoration: const InputDecoration(
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       prefixIcon: Icon(Icons.lock),
                       hintText: 'Пароль',
-                      suffixIcon: Icon(Icons.visibility_off)
-                  ),
+                      suffixIcon: Icon(Icons.visibility_off)),
                 ),
                 const SizedBox(height: 44),
                 GestureDetector(
@@ -68,18 +64,15 @@ class LogInPage extends StatelessWidget {
                             blurRadius: 1,
                             offset: const Offset(0, 1),
                           )
-                        ]
-                    ),
+                        ]),
                     child: const Center(
                         child: Text(
-                          'Вход',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
-                          ),
-                        )
-                    ),
+                      'Вход',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    )),
                   ),
                 ),
               ],

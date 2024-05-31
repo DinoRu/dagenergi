@@ -1,5 +1,5 @@
+import 'package:dagenergi/controllers/login_controller.dart';
 import 'package:dagenergi/custom_widgets/my_drawer_title.dart';
-import 'package:dagenergi/views/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +8,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LoginController ctrl = Get.find<LoginController>();
     return Drawer(
       backgroundColor: Colors.grey.shade100,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
@@ -37,7 +38,7 @@ class MyDrawer extends StatelessWidget {
               text: 'В ы х о д',
               icon: Icons.logout,
               onTap: () {
-                Get.off(() => const LogInPage());
+                ctrl.logout();
               }),
           const SizedBox(height: 50),
         ],

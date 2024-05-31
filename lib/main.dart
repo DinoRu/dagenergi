@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'firebase_options.dart';
 
@@ -33,10 +34,13 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.fade,
       title: 'dagenergi',
       theme: ThemeData(
+          inputDecorationTheme:
+              const InputDecorationTheme(border: InputBorder.none),
+          textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
           colorScheme: ColorScheme.light(
-        background: Colors.grey.shade100,
-        primary: Colors.blue,
-      )),
+            surface: Colors.grey.shade100,
+            primary: Colors.blue,
+          )),
       home: const SplashPage(),
       routes: {
         "tasks": (context) => const TaskPage(),

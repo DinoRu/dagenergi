@@ -29,7 +29,7 @@ public class MyNavigationService extends Service {
         Notification notification = new NotificationCompat.Builder(this, "location_channel")
                 .setContentTitle("Dagenergi")
                 .setContentText("Using location in foreground")
-                .setSmallIcon(R.drawable.ic_notification) // Remplacez avec votre propre icône
+                .setSmallIcon(R.drawable.ic_stat_home_logo) // Remplacez avec votre propre icône
                 .build();
 
         startForeground(1, notification);

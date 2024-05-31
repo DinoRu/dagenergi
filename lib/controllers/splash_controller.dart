@@ -7,8 +7,8 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Map<String, dynamic>? user = GetStorage().read('loginUser');
-    Future.delayed(const Duration(seconds: 5), () {
+    Map<String, dynamic>? user = GetStorage().read('user');
+    Future.delayed(const Duration(seconds: 3), () {
       if (user != null) {
         Get.offAll(() => const TaskPage());
       } else {

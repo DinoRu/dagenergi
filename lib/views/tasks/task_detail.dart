@@ -164,9 +164,9 @@ class TaskDetailPage extends StatelessWidget {
                           child: ElevatedButton(
                             style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all(Colors.blue),
+                                    WidgetStateProperty.all(Colors.blue),
                                 foregroundColor:
-                                    MaterialStateProperty.all(Colors.white)),
+                                    WidgetStateProperty.all(Colors.white)),
                             onPressed: () async {
                               showDialog(
                                   context: context,

@@ -10,7 +10,7 @@ public class MainActivity extends FlutterActivity {
      @Override
     public void configureFlutterEngine(FlutterEngine flutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
-        FlutterForegroundTaskPlugin.setPluginRegistrant(this);
+        // FlutterForegroundTaskPlugin.setPluginRegistrant(this);
     }
 }
 

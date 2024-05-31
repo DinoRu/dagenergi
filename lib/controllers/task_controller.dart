@@ -2,19 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:dagenergi/api/api.dart';
 import 'package:dagenergi/models/complete_task.dart';
 import 'package:dagenergi/models/tasks.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskController extends GetxController {
   static TaskController get to => Get.find();
+
+  final taskUri = ApiUrl.getTaskUrl;
 
   //? TextEditingController
   TextEditingController commentCtrl = TextEditingController();
@@ -81,19 +82,19 @@ class TaskController extends GetxController {
           return AlertDialog(
             title: const Text('Permission request'),
             content: const Text(
-                "'This app needs location permission to take photos. Please grant the permission in settings."),
+                "'Для съемки фотографий этому приложению требуется разрешение на определение местоположения. Пожалуйста, предоставьте это разрешение в настройках."),
             actions: [
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text("Cancel")),
+                  child: const Text("Отменить")),
               TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop();
                     await openAppSettings();
                   },
-                  child: const Text('Open settings')),
+                  child: const Text('Откройте настройки')),
             ],
           );
         });
@@ -112,14 +113,14 @@ class TaskController extends GetxController {
   //Function to take first image
   Future<void> takeImage(MyTask myTask) async {
     _file =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 40);
     update();
   }
 
   //Function to take second image
   Future<void> takeHomeImage(MyTask myTask) async {
     _hFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 40);
     update();
   }
 
@@ -156,10 +157,9 @@ class TaskController extends GetxController {
 
   //Function to get all tasks
   Future<void> getAllTask() async {
-    const apiUrl = "http://45.147.176.236:5000/tasks/";
     loading.value = true;
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(Uri.parse(taskUri));
       if (response.statusCode == 200) {
         Utf8Decoder decoder = const Utf8Decoder();
         String decodeBody = decoder.convert(response.bodyBytes);
@@ -169,8 +169,6 @@ class TaskController extends GetxController {
         tasks = responseData.map((json) => MyTask.fromJson(json)).toList();
         totalTasks = tasks.length;
         searchResults = List<MyTask>.from(tasks);
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString('cachedTask', jsonEncode(tasks));
       } else {
         throw Exception('Failed to fetch tasks');
       }
@@ -209,7 +207,7 @@ class TaskController extends GetxController {
   //Function to update task
   Future<void> completeTask(String taskId, double previousIndication,
       String meterImageUrl, String homeImageUrl, String? comment) async {
-    final apiUrl = "http://45.147.176.236:5000/tasks/$taskId/complete";
+    final apiUrl = "http://45.84.226.183:5000/tasks/$taskId/complete";
     final completeTask = TaskComplete(
       nearPhotoUrl: meterImageUrl,
       farPhotoUrl: homeImageUrl,
@@ -228,13 +226,15 @@ class TaskController extends GetxController {
       if (response.statusCode == 200) {
         tasks.removeWhere((task) => task.taskId == taskId);
         update();
-        Get.snackbar('Success', "Task was updated successufully!",
-            colorText: Colors.green);
+        Get.snackbar("Успех", "Задание выполнено успешно!",
+            colorText: Colors.white, backgroundColor: Colors.green.shade300);
       } else {
-        Get.snackbar('Error', "Failed to update task", colorText: Colors.red);
+        Get.snackbar("Ошибка", "Не удалось выполнить задание",
+            colorText: Colors.white, backgroundColor: Colors.red.shade300);
       }
     } catch (e) {
-      Get.snackbar('Failed', "Failed to update!", colorText: Colors.red);
+      Get.snackbar("Ошибка", "Не удалось выполнить задание",
+          colorText: Colors.red, backgroundColor: Colors.white);
       throw Exception("Failed to updated");
     }
   }
